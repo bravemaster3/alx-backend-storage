@@ -6,25 +6,17 @@ DROP PROCEDURE IF EXISTS ComputeAverageScoreForUser;
 
 DELIMITER //
 
-CREATE PROCEDURE ComputeAverageScoreForUser(
-    IN user_id INT
-)
+CREATE PROCEDURE ComputeAverageScoreForUser (IN user_id_param INT)
 BEGIN
-    DECLARE average_score FLOAT;
-    SELECT AVG(CAST(score AS FLOAT)) INTO average_score
-    FROM corrections c
-    WHERE c.user_id = user_id;
-
-    -- Debugging: Print average score
-    -- SELECT * FROM corrections WHERE user_id = (SELECT id FROM users WHERE name = 'Jeanne');
-
-    IF average_score IS NULL THEN
-        SET average_score = 0;
-    END IF;
-
+    -- Calculate average score for the user and update the users table
     UPDATE users
-    SET average_score = average_score
-    WHERE id = user_id;
-END //
+    SET average_score = (
+        SELECT AVG(score)
+        FROM corrections
+        WHERE user_id = user_id_param
+    )
+    WHERE id = user_id_param;
+END//
 
 DELIMITER ;
+

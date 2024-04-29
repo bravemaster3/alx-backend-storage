@@ -1,7 +1,2 @@
-// Get the list of databases
-var databases = db.adminCommand('listDatabases').databases;
-
-// Print the names of databases
-databases.forEach(function(database) {
-    print(database.name);
-});
+// Get the list of mongo db
+show dbs;

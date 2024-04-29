@@ -1,6 +1,6 @@
 // Script that inserts record into database passed as option
 
-db.school.insertOne(
+db.school.insert(
 {
     name: "Holberton school"
 }

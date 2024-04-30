@@ -19,7 +19,7 @@ def count_calls(method: Callable) -> Callable:
     return wrapper
 
 
-def call_history(method):
+def call_history(method: Callable) -> Callable:
     @functools.wraps(method)
     def wrapper(self, *args, **kwargs):
         inputs_key = method.__qualname__ + ":inputs"

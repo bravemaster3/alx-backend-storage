@@ -26,9 +26,9 @@ if __name__ == "__main__":
             "_id": "$ip",
             "ip_count": {"$sum": 1}  # Count occurrences of each IP
         }},
-        {"$sort": {"ip_count", -1}},  # Sort by ip_count in descending order
+        {"$sort": {"ip_count": -1}},  # Sort by ip_count in descending order
         {"$limit": 10}  # Limit to top 10 documents
     ])
     print("IPs:")
     for log in list(aggr_collection):
-        print(f"\t{log.ip}")
+        print(f"\t{log['_id']}: {log['ip_count']}")

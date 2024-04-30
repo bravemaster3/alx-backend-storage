@@ -43,17 +43,17 @@ def replay(fn: Callable) -> None:
     cache = getattr(fn.__self__, '_redis', None)
     if not isinstance(cache, redis.Redis):
         return
-    inputs_key = fn.__qualname__ + ":inputs"
-    outputs_key = fn.__qualname__ + ":outputs"
+    inputs_key = f"{fn.__qualname__} :inputs"
+    outputs_key = f"{fn.__qualname__} :outputs"
 
-    inputs = cache._redis.lrange(inputs_key, 0, -1)
-    outputs = cache._redis.lrange(outputs_key, 0, -1)
+    inputs = cache.lrange(inputs_key, 0, -1)
+    outputs = cache.lrange(outputs_key, 0, -1)
 
     print(f"{fn.__qualname__} was called {len(inputs)} times:")
     for inp, out in zip(inputs, outputs):
         print(
             f"{fn.__qualname__}"
-            f"(*{inp.decode('utf-8')}) -> {out.decode('utf-8')}"
+            f"(*{inp.decode('utf-8')}) -> {out}"
         )
 
 

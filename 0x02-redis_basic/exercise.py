@@ -36,6 +36,27 @@ def call_history(method: Callable) -> Callable:
     return wrapper
 
 
+def replay(fn: Callable) -> None:
+    """recalls the list of calls of a particular function"""
+    if fn is None or not hasattr(fn, '__self__'):
+        return
+    cache = getattr(fn.__self__, '_redis', None)
+    if not isinstance(cache, redis.Redis):
+        return
+    inputs_key = fn.__qualname__ + ":inputs"
+    outputs_key = fn.__qualname__ + ":outputs"
+
+    inputs = cache._redis.lrange(inputs_key, 0, -1)
+    outputs = cache._redis.lrange(outputs_key, 0, -1)
+
+    print(f"{fn.__qualname__} was called {len(inputs)} times:")
+    for inp, out in zip(inputs, outputs):
+        print(
+            f"{fn.__qualname__}"
+            f"(*{inp.decode('utf-8')}) -> {out.decode('utf-8')}"
+        )
+
+
 class Cache:
     """Class Cache  definition"""
     def __init__(self):
@@ -66,24 +87,3 @@ class Cache:
     def get_int(self, key: str) -> int:
         """parametrize Cache.get with the int conversion function"""
         return (self.get(key=key, fn=int))
-
-
-def replay(fn: Callable) -> None:
-    """recalls the list of calls of a particular function"""
-    if fn is None or not hasattr(fn, '__self__'):
-        return
-    cache = getattr(fn.__self__, '_redis', None)
-    if not isinstance(cache, redis.Redis):
-        return
-    inputs_key = fn.__qualname__ + ":inputs"
-    outputs_key = fn.__qualname__ + ":outputs"
-
-    inputs = cache._redis.lrange(inputs_key, 0, -1)
-    outputs = cache._redis.lrange(outputs_key, 0, -1)
-
-    print(f"{fn.__qualname__} was called {len(inputs)} times:")
-    for inp, out in zip(inputs, outputs):
-        print(
-            f"{fn.__qualname__}"
-            f"(*{inp.decode('utf-8')}) -> {out.decode('utf-8')}"
-            )

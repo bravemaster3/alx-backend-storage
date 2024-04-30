@@ -33,8 +33,8 @@ class Cache:
 
     def get_str(self, key: str) -> str:
         """parametrize Cache.get with the str conversion function"""
-        return (self.get(key=key, fun=lambda d: d.decode("utf-8")))
+        return (self.get(key=key, fn=lambda d: d.decode("utf-8")))
 
     def get_int(self, key: str) -> int:
         """parametrize Cache.get with the int conversion function"""
-        return (self.get(key=key, fun=int))
+        return (self.get(key=key, fn=int))

@@ -13,6 +13,7 @@ def count_calls(method: Callable) -> Callable:
     """Wrapper method for incrementing key"""
     @functools.wraps(method)
     def wrapper(self, *args, **kwargs):
+        """wrapper definition"""
         key = method.__qualname__
         self._redis.incr(key)
         return method(self, *args, **kwargs)
@@ -20,8 +21,10 @@ def count_calls(method: Callable) -> Callable:
 
 
 def call_history(method: Callable) -> Callable:
+    """call history definition"""
     @functools.wraps(method)
     def wrapper(self, *args, **kwargs):
+        """wrapper definition"""
         inputs_key = method.__qualname__ + ":inputs"
         outputs_key = method.__qualname__ + ":outputs"
         # Append input arguments to the inputs list

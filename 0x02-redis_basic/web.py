@@ -10,8 +10,10 @@ import functools
 
 
 def track_access(func):
+    """track access definition"""
     @functools.wraps(func)
     def wrapper(url):
+        """wrapper definition"""
         # Initialize Redis connection
         redis_conn = redis.Redis()
 
@@ -25,8 +27,10 @@ def track_access(func):
 
 
 def cache_result(func):
+    """cache result definition"""
     @functools.wraps(func)
     def wrapper(url):
+        """wrapper definition"""
         # Initialize Redis connection
         redis_conn = redis.Redis()
 
@@ -49,6 +53,6 @@ def cache_result(func):
 @track_access
 @cache_result
 def get_page(url: str) -> str:
-    # Fetch the HTML content from the URL
+    """Fetch the HTML content from the URL"""
     response = requests.get(url)
     return response.text

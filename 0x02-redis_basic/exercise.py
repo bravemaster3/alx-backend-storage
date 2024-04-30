@@ -25,8 +25,6 @@ class Cache:
             fn: Callable = None) -> Union[str, bytes, int, float]:
         """ convert the data back to the desired format."""
         data = self._redis.get(key)
-        if not data:
-            return None
         if fn is not None:
             return fn(data)
         return data

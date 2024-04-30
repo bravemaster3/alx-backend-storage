@@ -19,6 +19,23 @@ def count_calls(method: Callable) -> Callable:
     return wrapper
 
 
+def call_history(method):
+    @functools.wraps(method)
+    def wrapper(self, *args, **kwargs):
+        inputs_key = method.__qualname__ + ":inputs"
+        outputs_key = method.__qualname__ + ":outputs"
+        # Append input arguments to the inputs list
+        self._redis.rpush(inputs_key, str(args))
+        # Execute the original method to get the output
+        output = method(self, *args, **kwargs)
+        # Append the output to the outputs list
+        self._redis.rpush(outputs_key, str(output))
+
+        return output
+
+    return wrapper
+
+
 class Cache:
     """Class Cache  definition"""
     def __init__(self):
@@ -27,6 +44,7 @@ class Cache:
         self._redis.flushdb()
 
     @count_calls
+    @call_history
     def store(self, data: Union[str, bytes, int, float]) -> str:
         """method that generates a random key"""
         key = str(uuid4())
